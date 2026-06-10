@@ -9,7 +9,6 @@ import org.example.models.TestDataGenerator;
 import org.example.models.User;
 import org.example.pages.LoginPage;
 
-import static com.codeborne.selenide.Condition.visible;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**

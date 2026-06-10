@@ -27,9 +27,7 @@ public class LoginPage extends BasePage {
 
     public LoginPage openLoginPage() {
         openPage();
-        // Клик «Вход и регистрация» — React Router переходит на /login
         authButton.shouldBe(visible).click();
-        // Ждём появления поля email — признак загрузки формы
         emailInput.shouldBe(visible);
         return this;
     }
@@ -56,17 +54,5 @@ public class LoginPage extends BasePage {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    public String getErrorMessage() {
-        SelenideElement errorElement = $(byXpath("//*[contains(@class,'error') or contains(@class,'Error') or contains(@class,'err')]"));
-        if (errorElement.exists() && errorElement.is(visible)) {
-            return errorElement.getText();
-        }
-        SelenideElement errorText = $(byXpath("//*[contains(text(),'ошиб') or contains(text(),'Ошиб') or contains(text(),'существ') or contains(text(),'Существ')]"));
-        if (errorText.exists() && errorText.is(visible)) {
-            return errorText.getText();
-        }
-        return "";
     }
 }

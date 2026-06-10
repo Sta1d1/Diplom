@@ -16,16 +16,6 @@ public abstract class BasePage {
     /** Открыть страницу по базовому URL */
     public void openPage() {
         Selenide.open(pageUrl);
-        waitForPageLoad();
-    }
-
-    /** Открыть страницу по базовому URL + суффикс (например, /listing/99) */
-    public void openPageWithSuffix(String suffix) {
-        Selenide.open(pageUrl + suffix);
-        waitForPageLoad();
-    }
-
-    public void waitForPageLoad() {
         $("body").shouldBe(visible);
     }
 

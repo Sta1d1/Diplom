@@ -1,9 +1,6 @@
 package org.example.pages;
 
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-
-import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byXpath;
@@ -17,22 +14,10 @@ public class AdDetailsPage extends BasePage {
 
     private static final String PAGE_URL_PATH = "/listing";
 
-    private final SelenideElement editButton = $(byXpath("//button[text()='Редактировать объявление']"));
     private final SelenideElement deleteButton = $(byXpath("//button[text()='Удалить']"));
 
     public AdDetailsPage() {
         super(PAGE_URL_PATH);
-    }
-
-    /** Открыть страницу объявления по ID */
-    public AdDetailsPage openAdPage(String adId) {
-        openPageWithSuffix("/" + adId);
-        return this;
-    }
-
-    public AdDetailsPage clickEdit() {
-        editButton.shouldBe(visible).click();
-        return this;
     }
 
     /**
