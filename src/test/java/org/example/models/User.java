@@ -3,7 +3,6 @@ package org.example.models;
 public class User {
     private String email;
     private String password;
-    private String name;
     private String token;
 
     public User() {
@@ -23,14 +22,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getToken() {

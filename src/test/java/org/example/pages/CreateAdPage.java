@@ -16,7 +16,6 @@ public class CreateAdPage extends BasePage {
 
     private final SelenideElement titleInput = $(byXpath("//input[@placeholder='Название']"));
     private final SelenideElement newGoodsRadio = $(byXpath("//label[text()='Новый']/../div"));
-    private final SelenideElement usedGoodsRadio = $(byXpath("//label[text()='Б/У']/../div"));
     private final SelenideElement descriptionInput = $(byXpath("//textarea[@placeholder='Описание товара']"));
     private final SelenideElement priceInput = $(byXpath("//input[@placeholder='Стоимость']"));
     private final SelenideElement publishButton = $(byXpath("//button[text()='Опубликовать']"));
@@ -32,11 +31,6 @@ public class CreateAdPage extends BasePage {
 
     public CreateAdPage selectNewGoods() {
         newGoodsRadio.shouldBe(visible).click();
-        return this;
-    }
-
-    public CreateAdPage selectUsedGoods() {
-        usedGoodsRadio.shouldBe(visible).click();
         return this;
     }
 
@@ -57,10 +51,8 @@ public class CreateAdPage extends BasePage {
 
     /**
      * Проверяет, что создание объявления прошло успешно — произошёл редирект с /create-lisiting.
-     * Используется should-ожидание вместо мгновенной проверки URL.
      */
     public boolean isAdCreated() {
-        // Даём время на редирект — проверяем, что URL больше не содержит путь создания
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {

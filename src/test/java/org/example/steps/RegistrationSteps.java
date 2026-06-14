@@ -1,6 +1,5 @@
 package org.example.steps;
 
-import com.codeborne.selenide.Selenide;
 import io.cucumber.java.ru.Дано;
 import io.cucumber.java.ru.Когда;
 import io.cucumber.java.ru.Тогда;
@@ -28,7 +27,7 @@ public class RegistrationSteps {
 
     private RegistrationPage getRegistrationPage() {
         if (registrationPage == null) {
-            registrationPage = Selenide.page(RegistrationPage.class);
+            registrationPage = com.codeborne.selenide.Selenide.page(RegistrationPage.class);
         }
         return registrationPage;
     }
@@ -64,11 +63,6 @@ public class RegistrationSteps {
         getRegistrationPage().confirmPassword(user.getPassword());
     }
 
-    @Когда("указывает неверный пароль при регистрации")
-    public void entersWrongPassword() {
-        getRegistrationPage().enterPassword("WrongPassword999!");
-    }
-
     @Тогда("регистрация проходит успешно")
     public void registrationIsSuccessful() {
         assertTrue(getRegistrationPage().isRegistrationSuccessful(),
@@ -81,14 +75,12 @@ public class RegistrationSteps {
         String password = TestDataGenerator.generatePassword();
         try {
             authApi.register(email, password);
-            user.setEmail(email);
-            user.setPassword(password);
-            registeredEmail = email;
         } catch (Exception e) {
-            user.setEmail(email);
-            user.setPassword(password);
-            registeredEmail = email;
+            // Пользователь может быть уже зарегистрирован — это допустимо
         }
+        user.setEmail(email);
+        user.setPassword(password);
+        registeredEmail = email;
     }
 
     @Тогда("отображается сообщение об ошибке регистрации")

@@ -5,7 +5,6 @@ import com.codeborne.selenide.WebDriverRunner;
 import io.cucumber.java.ru.Дано;
 import io.cucumber.java.ru.Когда;
 import io.cucumber.java.ru.Тогда;
-import org.example.api.AdApi;
 import org.example.api.AuthApi;
 import org.example.models.Ad;
 import org.example.models.TestDataGenerator;
@@ -28,14 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AdSteps {
 
     private static final long REDIRECT_TIMEOUT_MS = 5000;
-    private static final String CATEGORY_AUTO = "Авто";
-    private static final String CONDITION_NEW = "Новый";
-    private static final String CITY_MOSCOW = "Москва";
 
     private final User user;
     private final Ad ad;
     private final AuthApi authApi;
-    private final AdApi adApi;
     private CreateAdPage createAdPage;
     private EditAdPage editAdPage;
     private AdDetailsPage adDetailsPage;
@@ -44,7 +39,6 @@ public class AdSteps {
         this.user = user;
         this.ad = ad;
         this.authApi = authApi;
-        this.adApi = new AdApi();
     }
 
     private CreateAdPage getCreateAdPage() {
@@ -79,19 +73,13 @@ public class AdSteps {
             user.setToken(token);
         }
 
-        // Открываем главную и логинимся через UI
         HomePage homePage = new HomePage();
         homePage.openHomePage();
 
-        // Клик «Вход и регистрация» — React Router переходит на /login
         Selenide.$x("//button[text()='Вход и регистрация']").shouldBe(visible).click();
-        // Ждём появления поля email
         Selenide.$x("//input[@placeholder='Введите Email']").shouldBe(visible).setValue(user.getEmail());
-        // Вводим пароль
         Selenide.$x("//input[@placeholder='Пароль']").shouldBe(visible).setValue(user.getPassword());
-        // Клик «Войти»
         Selenide.$x("//button[text()='Войти']").shouldBe(visible).click();
-        // Ждём, пока авторизация завершится — должна появиться кнопка «Выйти»
         Selenide.$x("//button[text()='Выйти']").shouldBe(visible);
     }
 
@@ -104,7 +92,6 @@ public class AdSteps {
         ad.setDescription(description);
         ad.setPrice(price);
 
-        // Создаём объявление через UI — Redux обновится, карточка будет доступна
         Selenide.$x("//button[text()='Разместить объявление']").shouldBe(visible).click();
         getCreateAdPage().enterTitle(title);
         getCreateAdPage().selectNewGoods();
@@ -112,10 +99,7 @@ public class AdSteps {
         getCreateAdPage().enterPrice(price);
         getCreateAdPage().clickPublish();
 
-        // Ждём редиректа на главную
         waitForRedirectFrom("/create-lisiting");
-
-        // Используем поиск по названию, чтобы найти карточку на главной
         searchForAd(title);
     }
 
@@ -169,12 +153,9 @@ public class AdSteps {
 
     @Когда("пользователь открывает страницу редактирования объявления")
     public void userOpensEditAdPage() {
-        // Используем поиск, если карточка не видна сразу
         ensureAdVisible(ad.getTitle());
-        // Кликаем по карточке объявления (div.card, содержащий h2 с названием)
         Selenide.$x("//div[contains(@class,'card') and .//h2[contains(., '" + ad.getTitle() + "')]]")
                 .shouldBe(visible, Duration.ofSeconds(10)).click();
-        // Клик «Редактировать объявление»
         Selenide.$x("//button[text()='Редактировать объявление']")
                 .shouldBe(visible, Duration.ofSeconds(10)).click();
         editAdPage = Selenide.page(EditAdPage.class);
@@ -200,12 +181,9 @@ public class AdSteps {
 
     @Когда("пользователь удаляет объявление")
     public void userDeletesAd() {
-        // Используем поиск, если карточка не видна сразу
         ensureAdVisible(ad.getTitle());
-        // Кликаем по карточке объявления (div.card, содержащий h2 с названием)
         Selenide.$x("//div[contains(@class,'card') and .//h2[contains(., '" + ad.getTitle() + "')]]")
                 .shouldBe(visible, Duration.ofSeconds(10)).click();
-        // Ждём загрузки страницы объявления
         Selenide.$x("//div[contains(@class,'listingPage')]")
                 .shouldBe(visible, Duration.ofSeconds(10));
         adDetailsPage = Selenide.page(AdDetailsPage.class);
@@ -238,23 +216,19 @@ public class AdSteps {
 
     /**
      * Ищет объявление по названию через строку поиска на главной странице.
-     * Вводит название, нажимает «Применить» и ждёт результатов.
      */
     private void searchForAd(String title) {
         Selenide.$x("//input[@placeholder='Я хочу купить...']")
                 .shouldBe(visible).setValue(title);
         Selenide.$x("//button[text()='Применить']").shouldBe(visible).click();
-        // Ждём, пока отфильтрованные результаты загрузятся
         Selenide.$x("//div[contains(@class,'card') and .//h2[contains(., '" + title + "')]]")
                 .shouldBe(visible, Duration.ofSeconds(10));
     }
 
     /**
      * Убеждается, что карточка объявления видна на странице.
-     * Если не видна, использует поиск по названию.
      */
     private void ensureAdVisible(String title) {
-        // Всегда используем поиск, т.к. объявление может быть не на текущей странице
         searchForAd(title);
     }
 }

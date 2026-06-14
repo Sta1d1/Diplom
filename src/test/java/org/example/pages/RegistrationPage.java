@@ -27,12 +27,9 @@ public class RegistrationPage extends BasePage {
 
     public RegistrationPage openRegistrationPage() {
         openPage();
-        // Клик «Вход и регистрация» для открытия формы входа
         authButton.shouldBe(visible).click();
         emailInput.shouldBe(visible);
-        // Клик «Нет аккаунта» для перехода к форме регистрации
         noAccountButton.shouldBe(visible).click();
-        // Ждём появления поля подтверждения пароля — признак формы регистрации
         confirmPasswordInput.shouldBe(visible);
         return this;
     }
@@ -52,11 +49,6 @@ public class RegistrationPage extends BasePage {
         return this;
     }
 
-    public RegistrationPage clickRegister() {
-        createAccountButton.shouldBe(visible).click();
-        return this;
-    }
-
     public boolean isRegistrationSuccessful() {
         try {
             logoutButton.shouldBe(visible, Duration.ofSeconds(15));
@@ -67,12 +59,10 @@ public class RegistrationPage extends BasePage {
     }
 
     public String getErrorMessage() {
-        // Попробуем несколько селекторов для поиска сообщения об ошибке
         SelenideElement errorElement = $(byXpath("//*[contains(@class,'error') or contains(@class,'Error') or contains(@class,'err')]"));
         if (errorElement.exists() && errorElement.is(visible)) {
             return errorElement.getText();
         }
-        // Запасной вариант: ищем любой видимый текст с ключевыми словами ошибки
         SelenideElement errorText = $(byXpath("//*[contains(text(),'ошиб') or contains(text(),'Ошиб') or contains(text(),'существ') or contains(text(),'Существ')]"));
         if (errorText.exists() && errorText.is(visible)) {
             return errorText.getText();

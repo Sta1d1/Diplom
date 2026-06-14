@@ -16,10 +16,6 @@ public class TestDataGenerator {
         return "TestPass123!";
     }
 
-    public static String generateName() {
-        return "Тестовый пользователь";
-    }
-
     public static String generateAdTitle() {
         return "Объявление-" + UUID.randomUUID().toString().substring(0, 8);
     }
@@ -30,9 +26,5 @@ public class TestDataGenerator {
 
     public static String generateAdPrice() {
         return String.valueOf(ThreadLocalRandom.current().nextInt(100, 10000));
-    }
-
-    public static String generateCategory() {
-        return "Электроника";
     }
 }
