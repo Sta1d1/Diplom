@@ -27,6 +27,16 @@ public class RegistrationPage extends BasePage {
 
     public RegistrationPage openRegistrationPage() {
         openPage();
+        // Если пользователь залогинен, сначала выходим через кнопку «Выйти»
+        if (logoutButton.exists() && logoutButton.is(visible)) {
+            logoutButton.click();
+        }
+        // Если после logout кнопка входа не появилась — токен в памяти React,
+        // нужно полностью пересоздать браузерную сессию
+        if (!authButton.exists() || !authButton.is(visible)) {
+            com.codeborne.selenide.Selenide.closeWebDriver();
+            openPage();
+        }
         authButton.shouldBe(visible).click();
         emailInput.shouldBe(visible);
         noAccountButton.shouldBe(visible).click();
@@ -52,10 +62,19 @@ public class RegistrationPage extends BasePage {
     public boolean isRegistrationSuccessful() {
         try {
             logoutButton.shouldBe(visible, Duration.ofSeconds(15));
+            // После подтверждения регистрации выходим, чтобы следующие шаги сценария
+            // могли корректно открыть страницу регистрации снова
+            logoutAndWaitForAuthButton();
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /** Нажать «Выйти» и дождаться появления кнопки «Вход и регистрация». */
+    public void logoutAndWaitForAuthButton() {
+        logoutButton.shouldBe(visible).click();
+        authButton.shouldBe(visible, Duration.ofSeconds(10));
     }
 
     public String getErrorMessage() {
