@@ -27,6 +27,16 @@ public class LoginPage extends BasePage {
 
     public LoginPage openLoginPage() {
         openPage();
+        // Если пользователь залогинен, сначала выходим через кнопку «Выйти»
+        if (logoutButton.exists() && logoutButton.is(visible)) {
+            logoutButton.click();
+        }
+        // Если после logout кнопка входа не появилась — токен в памяти React,
+        // нужно полностью пересоздать браузерную сессию
+        if (!authButton.exists() || !authButton.is(visible)) {
+            com.codeborne.selenide.Selenide.closeWebDriver();
+            openPage();
+        }
         authButton.shouldBe(visible).click();
         emailInput.shouldBe(visible);
         return this;
